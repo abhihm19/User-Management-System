@@ -1,0 +1,2 @@
+Add this to index.js to activate bootstrap
+import 'bootstrap/dist/css/bootstrap.css';

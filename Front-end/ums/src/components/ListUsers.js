@@ -7,14 +7,15 @@ const ListUsers = () => {
 
   useEffect(() => {
     UserService.getUsers()
-     .then((res) => {
+      .then((res) => {
         setUsers(res.data)
-        console.log(res.data)
-     })
-     .catch((err) => {
-      console.log(err)
-     })   
+        // console.log(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }, [])
+
   
 
   return (
@@ -38,25 +39,40 @@ const ListUsers = () => {
           {
             users.map(
               user =>
-              <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.firstName}</td>
-                <td>{user.lastName}</td>
-                <td>{user.userName}</td>
-                <td>{user.emailId}</td>
-                <td>{user.mobileNo}</td>
-                <td>{user.address}</td>
-                <td>
-                <Link to='/update'><h6>Update</h6></Link>
-                <Link to='/view'><h6>View</h6></Link>
-                <Link to='/delete'><h6>Delete</h6></Link>
-                </td>
-              </tr>
+                <tr key={user.id}>
+                  <td>{user.id}</td>
+                  <td>{user.firstName}</td>
+                  <td>{user.lastName}</td>
+                  <td>{user.userName}</td>
+                  <td>{user.emailId}</td>
+                  <td>{user.mobileNo}</td>
+                  <td>{user.address}</td>
+                  <td>
+                    <Link to={`/update/${user.id}`}><h6>Update</h6></Link>
+                    <Link to={`/view/${user.id}`}><h6>View</h6></Link>
+                    <Link to={`/delete/${user.id}`}><h6>Delete</h6></Link>
+                  </td>
+                </tr>
             )
           }
-          
+
         </tbody>
       </table>
+      <nav aria-label="...">
+        <ul className="pagination">
+          <li className="page-item disabled">
+            <a className="page-link" href="#" tabIndex="-1">Previous</a>
+          </li>
+          <li className="page-item"><a className="page-link" href="#">1</a></li>
+          <li className="page-item active">
+            <a className="page-link" href="#">2 <span className="sr-only">(current)</span></a>
+          </li>
+          <li className="page-item"><a className="page-link" href="#">3</a></li>
+          <li className="page-item">
+            <a className="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
     </div>
   )
 }

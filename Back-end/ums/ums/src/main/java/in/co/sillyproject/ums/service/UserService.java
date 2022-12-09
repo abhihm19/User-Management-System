@@ -1,12 +1,11 @@
 package in.co.sillyproject.ums.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import in.co.sillyproject.ums.dto.ApiResponse;
-import in.co.sillyproject.ums.dto.UserDto;
+import in.co.sillyproject.ums.exception.CustomException;
+import in.co.sillyproject.ums.exception.ResourceNotFoundException;
 import in.co.sillyproject.ums.model.User;
 import in.co.sillyproject.ums.repository.UserRepository;
 
@@ -19,73 +18,45 @@ public class UserService {
 		this.userRepository = userRepository;
 	}
 
-	public boolean addUser(UserDto userDto) {
-		System.out.println(userDto);
-		if (userRepository.findByUserName(userDto.getUserName()) != null)
-			return false;
-		else {
-			User user = new User();
-			user.setFirstName(userDto.getFirstName());
-			user.setLastName(userDto.getLastName());
-			user.setUserName(userDto.getUserName());
-			user.setEmailId(userDto.getEmailId());
-			user.setMobileNo(userDto.getMobileNo());
-			user.setAddress(userDto.getAddress());
-			System.out.println(user);
-			userRepository.save(user);
-			return true;
-		}
-	}
-
-	public ApiResponse updateUser(UserDto userDto) {
-		User user = userRepository.findByUserName(userDto.getUserName());
-		
-		user.setFirstName(userDto.getFirstName());
-		user.setLastName(userDto.getLastName());
-		user.setEmailId(userDto.getEmailId());
-		user.setMobileNo(userDto.getMobileNo());
-		user.setAddress(userDto.getAddress());
+	public String addUser(User user) {
+		if (userRepository.findByUserName(user.getUserName()) != null)
+			throw new CustomException("Username already taken");
 		userRepository.save(user);
-		return new ApiResponse(true, "user updated successfully");
-		}	
+		return "User added successfully";
 
-	public ApiResponse deleteUser(String userName) {
-		User user = userRepository.findByUserName(userName);		
-		userRepository.delete(user);
-		return new ApiResponse(true, "user deleted successfully");
 	}
-	
-	public UserDto viewUser(String userName) {
-		User user = userRepository.findByUserName(userName);		
-		UserDto userDto = new UserDto();
-		userDto.setFirstName(user.getFirstName());
-		userDto.setLastName(user.getLastName());
-		userDto.setUserName(user.getUserName());
-		userDto.setEmailId(user.getEmailId());
-		userDto.setMobileNo(user.getMobileNo());
-		userDto.setAddress(user.getAddress());
-		return userDto;
+
+	public String updateUser(long id, User user) {
+		System.out.println(user);
+		User existingUser = userRepository.findById(id);		
+		if(existingUser == null)
+			throw new ResourceNotFoundException("User with id "+user.getId()+" not found");
+		existingUser.setFirstName(user.getFirstName());
+		existingUser.setLastName(user.getLastName());
+		existingUser.setEmailId(user.getEmailId());
+		existingUser.setMobileNo(user.getMobileNo());
+		existingUser.setAddress(user.getAddress());
+		userRepository.save(existingUser);
+		return "User updated successfully";
 	}
-	
-	public List<UserDto> getUsers(){
-		List<User> users = userRepository.findAll();
-		return users.stream().map((user) -> mapToUserDto(user)).collect(Collectors.toList());
+
+	public String deleteUser(long id) {
+		User existingUser = userRepository.findById(id);
+		if(existingUser == null)
+			throw new ResourceNotFoundException("User with id "+id+" not found");	
+		userRepository.delete(existingUser);
+		return "User deleted successfully";
 	}
-	
-	private UserDto mapToUserDto(User user) {
-		UserDto userDto = new UserDto();
-		userDto.setId(user.getId());
-		userDto.setFirstName(user.getFirstName());
-		userDto.setLastName(user.getLastName());
-		userDto.setUserName(user.getUserName());
-		userDto.setEmailId(user.getEmailId());
-		userDto.setMobileNo(user.getMobileNo());
-		userDto.setAddress(user.getAddress());
-		return userDto;
-		
+
+	public User viewUser(long id) {
+		User existingUser = userRepository.findById(id);
+		if(existingUser == null)
+			throw new ResourceNotFoundException("User with id "+id+" not found");		
+		return existingUser;
 	}
-	
-	
+
+	public List<User> getAllUsers() {
+		return userRepository.findAll();
+	}
+
 }
-
-

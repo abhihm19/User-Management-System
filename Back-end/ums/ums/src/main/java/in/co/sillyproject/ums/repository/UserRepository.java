@@ -7,5 +7,6 @@ import in.co.sillyproject.ums.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-	User findByUserName(String userName);
+	User findById(long id);
+	User findByUserName(String username);
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams} from 'react-router-dom'
 import UserService from '../services/UserService'
 
-const ViewUser = () => { 
+const DeleteUser = () => { 
   const [user, setUser] = useState({}) 
   const navigate = useNavigate()
   const {id} = useParams()
@@ -22,6 +22,19 @@ const ViewUser = () => {
   const cancel = () => {
     navigate("/")
   }
+
+  const deleteUser = (e,id) => {
+    e.preventDefault()
+    console.log("delete user function" + id)
+    UserService.deleteUser(id)
+      .then((res) => {        
+        console.log(res.data) 
+        navigate("/")      
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
  
   return (
     <div>
@@ -29,7 +42,7 @@ const ViewUser = () => {
       <div className='container'>
         <div className='row'>
           <div className='card col-md-6 offset-md-3 offset-md-3'>
-            <h3 className='text-center'>USER PROFILE</h3>
+            <h3 className='text-center'>Delete User</h3>
             <hr />
             <form>
               <div className='row'>  
@@ -77,9 +90,14 @@ const ViewUser = () => {
                 </div>
                 <br /><br />
               </div>
+              <div>
+                Are you sure you want to delete the User?
+              </div>
+              <br />
               <div className="row">
-                <div className="col text-center">
-                  <button className='btn btn-primary' onClick={(e) => cancel()}>Back</button>
+                <div className="col">
+                  <button className='btn btn-danger' onClick={(e) => deleteUser(e,id)}>Delete</button>
+                  <button className='btn btn-primary' onClick={(e) => cancel(e)} style={{ "marginLeft": 20 }}>Back</button>
                 </div>
               </div>
               <br />
@@ -93,4 +111,4 @@ const ViewUser = () => {
   )
 }
 
-export default ViewUser
+export default DeleteUser

@@ -9,15 +9,16 @@ const AddUser = () => {
   const [emailId, setEmailId] = useState('')
   const [mobileNo, setMobileNo] = useState('')
   const [address, setAddress] = useState('')
+  const [error, setError] = useState('')
   const navigate = useNavigate();
 
   const saveUser = (e) => {
     e.preventDefault();
 
-    const userDto = { firstName, lastName, userName, emailId, mobileNo, address };
-    console.log(userDto);
+    const user = { firstName, lastName, userName, emailId, mobileNo, address };
+    console.log(user);
     if (isEnabled()) {
-      UserService.addUser(userDto)
+      UserService.addUser(user)
         .then((res) => {
           console.log(res.data)
           alert("User registered successfully")
@@ -34,9 +35,9 @@ const AddUser = () => {
     navigate("/")
   }
 
-  const isEnabled = () => { 
+  const isEnabled = () => {     
     return (firstName.length > 0 && lastName.length > 0
-      && userName.length > 3 && emailId.length > 0 && mobileNo.length === 10 && address.length > 0);
+      && userName.length > 3 && emailId.length > 0 && mobileNo.length > 9 && address.length > 0);
   }
 
   return (

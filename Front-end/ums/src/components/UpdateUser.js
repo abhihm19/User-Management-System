@@ -1,30 +1,34 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import UserService from '../services/UserService'
 
 const UpdateUser = () => {
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [userName, setUserName] = useState('')
-  const [emailId, setEmailId] = useState('')
-  const [mobileNo, setMobileNo] = useState('')
-  const [address, setAddress] = useState('')
-  const navigate = useNavigate();
+  const [user, setUser] = useState({}) 
+  const navigate = useNavigate()
+  const {id} = useParams()
+  
+  useEffect(() => {
+    UserService.viewUser(id)
+      .then((res) => {
+        setUser(res.data)
+        console.log(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  },[id])
 
   const updateUser = (e) => {
-    e.preventDefault();
-
-    const userDto = {firstName, lastName, userName, emailId, mobileNo, address};
-    console.log(userDto);
-    UserService.addUser(userDto)
+    e.preventDefault()     
+    UserService.updateUser(id, user)
       .then((res) => {
        console.log(res.data)
-       alert("user registered successfully")
+       alert("User updated successfully")
        navigate("/")
      })
       .catch((err) => {
         console.log(err)
-        alert("Username already taken")
+        alert("Update failed")
       })
   }
 
@@ -34,10 +38,11 @@ const UpdateUser = () => {
 
   return (
     <div>
+      <br />
       <div className='container'>
         <div className='row'>
           <div className='card col-md-6 offset-md-3 offset-md-3'>
-            <h3 className='text-center'>ADD USER</h3>
+            <h3 className='text-center'>UPDATE USER</h3>
             <hr />
             <form>
               <div className='row'>
@@ -48,8 +53,8 @@ const UpdateUser = () => {
                     className='form-control'
                     placeholder='Enter First Name'
                     required
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    defaultValue={user.firstName}
+                    onChange={(e) => user.firstName = e.target.value}
                   />
                 </div>
                 <div className='col-md-6'>
@@ -59,8 +64,8 @@ const UpdateUser = () => {
                     className='form-control'
                     placeholder='Enter last Name'
                     required
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    defaultValue={user.lastName}
+                    onChange={(e) => user.lastName = e.target.value}
                   />
                 </div>
               </div>
@@ -71,8 +76,8 @@ const UpdateUser = () => {
                 className='form-control'
                 placeholder='Enter username'
                 required
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
+                value={user.userName}
+                disabled
               />
               <br />
               <label>Email Id:<span className='required-star' >*</span></label>
@@ -81,8 +86,8 @@ const UpdateUser = () => {
                 className='form-control'
                 placeholder='Enter Email Id'
                 required
-                value={emailId}
-                onChange={(e) => setEmailId(e.target.value)}
+                defaultValue={user.emailId}
+                onChange={(e) => user.emailId = e.target.value}
               />
               <br />
               <label>Mobile Number:<span className='required-star' >*</span></label>
@@ -91,8 +96,8 @@ const UpdateUser = () => {
                 className='form-control'
                 placeholder='Enter Mobile Number'
                 required
-                value={mobileNo}
-                onChange={(e) => setMobileNo(e.target.value)}
+                defaultValue={user.mobileNo}
+                onChange={(e) => user.mobileNo = e.target.value}
               />
               <br />
               <label>Address:<span className='required-star' >*</span></label>
@@ -101,16 +106,18 @@ const UpdateUser = () => {
                 className='form-control'
                 placeholder='Enter address'
                 required
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                defaultValue={user.address}
+                onChange={(e) => user.address = e.target.value}
               />
               <br />
               <button className='btn btn-primary' onClick={(e) => updateUser(e)}>Submit</button>
               <button className='btn btn-danger' onClick={(e) => cancel()} style={{"marginLeft":20}}>Cancel</button>
               <br />
             </form>
-          </div>
+            <br />
+          </div>          
         </div>
+        <br /><br />
       </div>
     </div>
   )

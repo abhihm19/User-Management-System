@@ -1,17 +1,15 @@
-package in.co.sillyproject.ums.dto;
+package in.co.sillyproject.ums.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
+@Getter 
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiResponse {
-	
-	private boolean state;
-	private String message;
+public class ErrorDetails {
 
+	private String message;
 }

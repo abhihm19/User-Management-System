@@ -6,6 +6,7 @@ import ListUsers from './components/ListUsers';
 import AddUser from './components/AddUser';
 import UpdateUser from './components/UpdateUser';
 import ViewUser from './components/ViewUser';
+import DeleteUser from './components/DeleteUser';
 import Footer from './components/Footer';
 
 
@@ -17,8 +18,9 @@ function App() {
         <Routes>
           <Route index element={<ListUsers />} />
           <Route path="/add" element={<AddUser />} />
-          <Route path="/update" element={<UpdateUser />} />
-          <Route path="/view" element={<ViewUser />} />
+          <Route path="/update/:id" element={<UpdateUser />} />
+          <Route path="/view/:id" element={<ViewUser />} />
+          <Route path="/delete/:id" element={<DeleteUser />} />
           <Route path="/list" element={<ListUsers />} />          
         </Routes>
         <Footer />

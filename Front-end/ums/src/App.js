@@ -21,7 +21,7 @@ function App() {
           <Route path="/update/:id" element={<UpdateUser />} />
           <Route path="/view/:id" element={<ViewUser />} />
           <Route path="/delete/:id" element={<DeleteUser />} />
-          <Route path="/list" element={<ListUsers />} />          
+          <Route path="/list" element={<ListUsers />} />  
         </Routes>
         <Footer />
       </Router>

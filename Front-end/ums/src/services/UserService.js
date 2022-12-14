@@ -4,6 +4,11 @@ const BASE_URL = "http://localhost:7777/";
 
 class UserService {
 
+    // async checkUserNameAvailability(userName) {
+    //     console.log(userName)
+    //     return await axios.post(BASE_URL + "/?userName:" + userName);
+    // }
+
     async viewUser(id){
         console.log(id);
         return await axios.get(BASE_URL + id);

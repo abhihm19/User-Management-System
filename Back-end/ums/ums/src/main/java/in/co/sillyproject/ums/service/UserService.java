@@ -20,7 +20,7 @@ public class UserService {
 
 	public String addUser(User user) {
 		if (userRepository.findByUserName(user.getUserName()) != null)
-			throw new CustomException("Username already taken");
+			throw new CustomException("*Username already taken");
 		userRepository.save(user);
 		return "User added successfully";
 
@@ -57,6 +57,12 @@ public class UserService {
 
 	public List<User> getAllUsers() {
 		return userRepository.findAll();
+	}
+
+	public boolean checkUserNameAvailability(String userName) {
+		if(userRepository.findByUserName(userName) == null)
+			return true;
+		return false;
 	}
 
 }

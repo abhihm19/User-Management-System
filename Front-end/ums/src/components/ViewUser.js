@@ -12,7 +12,6 @@ const ViewUser = () => {
       .then((res) => {
         setUser(res.data)
         console.log(res.data)
-        console.log(user)
       })
       .catch((err) => {
         console.log(err)

@@ -1,29 +1,36 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import Pagination from './Pagination'
 import UserService from '../services/UserService'
 
 const ListUsers = () => {
   const [users, setUsers] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [usersPerPage] = useState(8)  
 
   useEffect(() => {
     UserService.getUsers()
       .then((res) => {
         setUsers(res.data)
-        // console.log(res.data)
       })
       .catch((err) => {
         console.log(err)
       })
   }, [])
 
-  
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+
+  const paginate = number => setCurrentPage(number) 
+  console.log(currentPage)
 
   return (
     <div className='container'>
-      <h2 className='text-center'>ListUsers</h2>
+      <h2 className='text-center'>Users</h2>
       <Link to='/add'><button className='btn btn-primary'>Add User</button></Link>
-      <table className="table table-striped">
-        <thead>
+      <table className="table table-hover">
+        <thead className='thead-light'>
           <tr>
             <th scope="col">Id</th>
             <th scope="col">First Name</th>
@@ -37,7 +44,7 @@ const ListUsers = () => {
         </thead>
         <tbody>
           {
-            users.map(
+            currUsers.map(
               user =>
                 <tr key={user.id}>
                   <td>{user.id}</td>
@@ -48,9 +55,9 @@ const ListUsers = () => {
                   <td>{user.mobileNo}</td>
                   <td>{user.address}</td>
                   <td>
-                    <Link to={`/update/${user.id}`}><h6>Update</h6></Link>
-                    <Link to={`/view/${user.id}`}><h6>View</h6></Link>
-                    <Link to={`/delete/${user.id}`}><h6>Delete</h6></Link>
+                    <Link className="btn btn-info btn-sm px-2"  to={`/update/${user.id}`}>Update</Link>
+                    <Link className="btn btn-secondary btn-sm px-2"  to={`/view/${user.id}`}>View</Link>
+                    <Link className="btn btn-danger btn-sm px-2"  to={`/delete/${user.id}`}>Delete</Link>
                   </td>
                 </tr>
             )
@@ -58,21 +65,13 @@ const ListUsers = () => {
 
         </tbody>
       </table>
-      <nav aria-label="...">
-        <ul className="pagination">
-          <li className="page-item disabled">
-            <a className="page-link" href="#" tabIndex="-1">Previous</a>
-          </li>
-          <li className="page-item"><a className="page-link" href="#">1</a></li>
-          <li className="page-item active">
-            <a className="page-link" href="#">2 <span className="sr-only">(current)</span></a>
-          </li>
-          <li className="page-item"><a className="page-link" href="#">3</a></li>
-          <li className="page-item">
-            <a className="page-link" href="#">Next</a>
-          </li>
-        </ul>
-      </nav>
+     <br />
+     <Pagination 
+      usersPerPage={usersPerPage} 
+      totalUsers={users.length} 
+      paginate={paginate} 
+    />
+     <br /><br />
     </div>
   )
 }

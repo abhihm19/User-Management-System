@@ -1,43 +1,44 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
 import UserService from '../services/UserService'
 
 const AddUser = () => {
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [userName, setUserName] = useState('')
-  const [emailId, setEmailId] = useState('')
-  const [mobileNo, setMobileNo] = useState('')
-  const [address, setAddress] = useState('')
-  const [error, setError] = useState('')
-  const navigate = useNavigate();
+  const [error, setError] = useState("")
+  const { register, handleSubmit, formState: { errors } } = useForm()
+  const navigate = useNavigate()
 
-  const saveUser = (e) => {
-    e.preventDefault();
+  // const checkUserNameAvailability = (e) => {
+  //   console.log("check user")
+  //   setUserName(e.target.value)
+  //   UserService.checkUserNameAvailability(userName)
+  //     .then((res) => {
+  //       if(res.data)
+  //       setError("Username already taken")
+  //     })
+  //     .catch((err) => {
+  //       console.log(err)
+  //     })
+      
+  // }
 
-    const user = { firstName, lastName, userName, emailId, mobileNo, address };
-    console.log(user);
-    if (isEnabled()) {
-      UserService.addUser(user)
-        .then((res) => {
-          console.log(res.data)
-          alert("User registered successfully")
-          navigate("/")
-        })
-        .catch((err) => {
-          console.log(err)
-          alert("Username already taken")
-        })
-    }
+  const onSubmit = (data) => {   
+    console.log(data) 
+    UserService.addUser(data)
+      .then((res) => {
+        console.log(res.data)        
+        navigate("/")
+      })
+      .catch((err) => {
+        console.log(err.response.data.message)
+        setError(err.response.data.message)
+        console.log(err)
+      })
+
   }
 
   const cancel = () => {
     navigate("/")
-  }
-
-  const isEnabled = () => {     
-    return (firstName.length > 0 && lastName.length > 0
-      && userName.length > 3 && emailId.length > 0 && mobileNo.length > 9 && address.length > 0);
   }
 
   return (
@@ -48,7 +49,7 @@ const AddUser = () => {
           <div className='card col-md-6 offset-md-3 offset-md-3'>
             <h3 className='text-center'>ADD USER</h3>
             <hr />
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className='row'>
                 <div className='col-md-6'>
                   <label>First Name:<span className='required-star' >*</span></label>
@@ -57,8 +58,9 @@ const AddUser = () => {
                     className='form-control'
                     placeholder='Enter First Name'
                     required
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    {...register("firstName",
+                      { required: "*First name is required" }
+                    )}
                   />
                 </div>
                 <div className='col-md-6'>
@@ -67,61 +69,81 @@ const AddUser = () => {
                     type='text'
                     className='form-control'
                     placeholder='Enter last Name'
-                    required
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    {...register("lastName",
+                      { required: "*Last name is required" }
+                    )}
                   />
                 </div>
               </div>
-              <br />
-              <label>User Name:<span className='required-star' >*</span></label>
-              <input
-                type='text'
-                className='form-control'
-                placeholder='Enter username'
-                required
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-              />
-              <br />
-              <label>Email Id:<span className='required-star' >*</span></label>
-              <input
-                type='email'
-                className='form-control'
-                placeholder='Enter Email Id'
-                required
-                value={emailId}
-                onChange={(e) => setEmailId(e.target.value)}
-              />
-              <br />
-              <label>Mobile Number:<span className='required-star' >*</span></label>
-              <input
-                type='number'
-                className='form-control'
-                placeholder='Enter Mobile Number'
-                required
-                value={mobileNo}
-                onChange={(e) => setMobileNo(e.target.value)}
-              />
-              <br />
-              <label>Address:<span className='required-star' >*</span></label>
-              <textarea
-                type='text'
-                className='form-control'
-                placeholder='Enter address'
-                required
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
-              <br />
-              <button type='submit' className='btn btn-primary' onClick={(e) => saveUser(e)} disabled={!isEnabled()}>Submit</button>
+              <p>{errors.firstName?.message || errors.lastName?.message}</p>
+              <div>
+                <label>User Name:<span className='required-star' >*</span></label>
+                <input
+                  type='text'
+                  className='form-control'
+                  name='userName'
+                  placeholder='Enter username'
+                  {...register("userName",
+                      { required: "*User name is required" }
+                    )}
+                  // onChange={(e) => checkUserNameAvailability(e)}                  
+                />
+              </div>
+              <p>{error || errors.userName?.message}</p>
+              <div>
+                <label>Email Id:<span className='required-star' >*</span></label>
+                <input
+                  type='email'
+                  className='form-control'
+                  placeholder='Enter Email Id'                  
+                  {...register("emailId",
+                    { required: "*Email ID is required" }
+                  )}
+                />
+              </div>
+              <p>{errors.emailId?.message}</p>
+              <div>
+                <label>Mobile Number:<span className='required-star' >*</span></label>
+                <input
+                  type='number'
+                  className='form-control'
+                  placeholder='Enter Mobile Number'
+                  {...register("mobileNo",
+                    {
+                      required: "*Mobile Number is required",
+                      minLength: {
+                        value: 10,
+                        message: "*Mobile Number should contain 10-11 digits"
+                      },
+                      maxLength: {
+                        value: 11,
+                        message: "*Mobile Number should contain 10-11 digits"
+                      }
+                    }
+                  )}
+                />
+              </div>
+              <p>{errors.mobileNo?.message}</p>
+              <div>
+                <label>Address:<span className='required-star' >*</span></label>
+                <textarea
+                  type='text'
+                  className='form-control'
+                  placeholder='Enter address'
+                  {...register("address",
+                    { required: "*Address is required" }
+                  )}
+                />
+              </div>
+              <p>{errors.address?.message}</p>
+              <button type='submit' className='btn btn-primary'>Submit</button>
               <button className='btn btn-danger' onClick={(e) => cancel()} style={{ "marginLeft": 20 }}>Cancel</button>
               <br />
             </form>
-            <br />           
-          </div>          
+            <br />
+          </div>
         </div>
-        <br />
+        <br /><br />
       </div>
     </div>
   )

@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,16 +23,25 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;	
 	
+	@NotNull
 	private String firstName;
-	
+	@NotNull
 	private String lastName;	
-	
+	@NotNull
 	private String userName;
-	
+	@NotNull
 	private String emailId;
-	
+	@NotNull
 	private String mobileNo;
-	
+	@NotNull
 	private String address;
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", userName=" + userName
+				+ ", emailId=" + emailId + ", mobileNo=" + mobileNo + ", address=" + address + "]";
+	}
+	
+	
 	
 }

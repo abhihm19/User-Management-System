@@ -2,6 +2,8 @@ package in.co.sillyproject.ums.controller;
 
 import java.util.List;
 
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import in.co.sillyproject.ums.dto.UserDto;
 import in.co.sillyproject.ums.model.User;
 import in.co.sillyproject.ums.service.UserService;
 
@@ -24,7 +28,29 @@ public class UserController {
 
 	public UserController(UserService userService) {
 		this.userService = userService;
-	}
+	}   
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadFile(@RequestParam(value = "file") MultipartFile file) {
+        return new ResponseEntity<>(userService.uploadFile(file), HttpStatus.OK);
+    }
+
+    @GetMapping("/download/{fileName}")
+    public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName) {
+        byte[] data = userService.downloadFile(fileName);
+        ByteArrayResource resource = new ByteArrayResource(data);
+        return ResponseEntity
+                .ok()
+                .contentLength(data.length)
+                .header("Content-type", "application/octet-stream")
+                .header("Content-disposition", "attachment; filename=\"" + fileName + "\"")
+                .body(resource);
+    }
+
+    @DeleteMapping("/delete/{fileName}")
+    public ResponseEntity<String> deleteFile(@PathVariable String fileName) {
+        return new ResponseEntity<>(userService.deleteFile(fileName), HttpStatus.OK);
+    }
 	
 	@GetMapping("/check-username-availability")
 	public ResponseEntity<?> checkUserNameAvailability(@RequestParam String userName) {
@@ -39,9 +65,9 @@ public class UserController {
 	}
 
 	@PostMapping("/")
-	public ResponseEntity<?> addUser(@RequestBody User user) {
-		System.out.println(user);
-		return ResponseEntity.ok().body(userService.addUser(user));
+	public ResponseEntity<?> addUser(@RequestBody UserDto userDto) {
+		System.out.println(userDto);
+		return ResponseEntity.ok().body(userService.addUser(userDto));
 
 	}
 
@@ -51,7 +77,7 @@ public class UserController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> addUser(@PathVariable long id) {
+	public ResponseEntity<String> deleteUser(@PathVariable long id) {
 		return ResponseEntity.ok().body(userService.deleteUser(id));
 	}
 

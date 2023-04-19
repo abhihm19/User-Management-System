@@ -23,7 +23,7 @@ class UserService {
     }
     
     async addUser(user){
-        return await axios.post(BASE_URL, user);
+        return await axios.post(BASE_URL + "/upload", user);
     }
 
     async deleteUser(id){

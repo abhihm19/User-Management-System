@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +37,8 @@ public class User {
 	private String mobileNo;
 	@NotNull
 	private String address;
+	@NotNull
+	private String profilePhotoName;
 
 	@Override
 	public String toString() {

@@ -1,0 +1,13 @@
+cloud:
+  aws:
+    credentials:
+      access-key: AKIA4LBGGYNC7SXLTYUF
+      secret-key: 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
+    region:
+      static: ap-northeast-1
+    stack:
+      auto: false
+
+application:
+  bucket:
+    name: project-files-storage
